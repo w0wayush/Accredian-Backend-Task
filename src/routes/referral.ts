@@ -22,12 +22,13 @@ const referralSchema = z.object({
 });
 
 router.post("/referral", async (req, res) => {
+  console.log("Inside referral router");
   const parsedBody = referralSchema.safeParse(req.body);
 
   if (!parsedBody.success) {
     return res.status(400).json({ errors: parsedBody.error.errors });
   }
-  // console.log("Parsed Body - ", parsedBody);
+  console.log("Parsed Body - ", parsedBody);
 
   const { referrerName, referrerEmail, referrerPhone, message, referees } =
     parsedBody.data;
@@ -45,7 +46,7 @@ router.post("/referral", async (req, res) => {
       },
     });
 
-    // console.log("Inserted in DB");
+    console.log("Inserted in DB");
 
     referees.forEach(async (referee) => {
       const mailOptions = {
@@ -54,12 +55,13 @@ router.post("/referral", async (req, res) => {
         body: `Hi ${referee.refereeName},\n\n${referrerName} has referred you to a course. Check it out!`,
       };
 
-      // console.log("Mail Sent");
+      console.log("Mail Sent");
       await mailSender(mailOptions);
     });
 
     res.status(201).json(referral);
   } catch (error) {
+    console.error("Error creating referral:", error);
     res
       .status(500)
       .json({ error: "Failed to submit referral", message: error });

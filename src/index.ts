@@ -11,6 +11,8 @@ app.use(express.json());
 app.use(
   cors({
     origin: process.env.VITE_APP_FE_URL,
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
